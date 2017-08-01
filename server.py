@@ -4,7 +4,6 @@ from threading import Thread, Lock
 from ftp_prot import FTP
 
 m = Lock()
-ftp = FTP("FTP")
 
 class MyTCPHandler(SocketServer.BaseRequestHandler):
     def handle(self):
@@ -20,18 +19,17 @@ class Server():
     def __init__(self):
         pass
         
-    def spawn_server(self, port):
+    def spawn_server(self, pot):
             m.acquire()
-            print 'Spawning honey pot on port', port
-            SocketServer.TCPServer.allow_reuse_address = True
-            server = SocketServer.TCPServer(("", port), MyTCPHandler)
+            print 'Spawning honey pot on port', pot.port
+            #SocketServer.TCPServer.allow_reuse_address = True
+            #server = SocketServer.TCPServer(("", port), MyTCPHandler)
             m.release()
-            server.serve_forever()
+            #server.serve_forever()
                    
     def createHoneypots(self, honey_list):
         for pot in honey_list:
-            #Thread(target = spawn_server, args = (port,)).start()
-            pot.register()
+            Thread(target = self.spawn_server, args = (pot,)).start()
     
 if __name__ == "__main__":
     pass
